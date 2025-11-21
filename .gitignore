@@ -1,0 +1,63 @@
+# =========================================
+# Node
+# =========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+*.pid
+
+# =========================================
+# Environment / Keys
+# (crea tus variables en .env y no subas claves)
+# =========================================
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Firebase local emulator
+.firebaserc
+firebase-debug.log
+firebase.json (si contiene solo config pública puedes permitirlo)
+.storage/
+
+# =========================================
+# Build outputs (React/Vite)
+# =========================================
+dist/
+build/
+.cache/
+.vite/
+coverage/
+
+# =========================================
+# Logs
+# =========================================
+logs/
+*.log
+
+# =========================================
+# Editor / IDE
+# =========================================
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# =========================================
+# OS files
+# =========================================
+*.tmp
+*.temp
+*.swp
+
+# =========================================
+# Optional: prevent leaking firebase config
+# if you want to keep firebase config private:
+# =========================================
+src/firebase/config.js
