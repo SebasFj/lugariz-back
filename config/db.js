@@ -9,10 +9,17 @@ const sequelize = new Sequelize(
   process.env.DB_PASSWORD,
   {
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 5432,
+    port: process.env.DB_PORT,
     dialect: "postgres",
-    logging: false, // Cambia a true si querés ver las consultas
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+    logging: false,
   }
 );
+
 
 export default sequelize;
