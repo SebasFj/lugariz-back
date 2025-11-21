@@ -61,3 +61,4 @@ Thumbs.db
 # if you want to keep firebase config private:
 # =========================================
 src/firebase/config.js
+.npmrc
