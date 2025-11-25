@@ -126,3 +126,14 @@ export const getUserPlaces = async (req,res) => {
     res.status(500).json({ message: "Error al obtener los sitios del usuario" });
   }
 }
+
+
+export const getUsers = async (req,res)=>{
+  try {
+    const usuarios = await Usuario.findAll()
+    return res.json(usuarios)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al obtener los usuarios" });
+  }
+}
