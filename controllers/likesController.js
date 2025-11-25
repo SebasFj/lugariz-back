@@ -1,4 +1,5 @@
 import * as db from "../models/index.js"
+import { checkDate } from "./eventosController.js";
 
 const {
   Usuario,
@@ -20,6 +21,9 @@ const {
 export const setLike = async (req, res) => {
   try {
     const { id_usuario, id_sitio } = req.params;
+    if (id_sitio == 1) {
+      await checkDate()
+    }
 
     // Traer el sitio para editar su contador
     const sitio = await Sitio.findByPk(id_sitio);
