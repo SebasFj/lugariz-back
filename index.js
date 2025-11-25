@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import sequelize from "./config/db.js";
 import runSeeders from'./seeders/index.js'
 import app from "./app.js"
+import "./cron/cronJobs.js"
 
 dotenv.config();
 

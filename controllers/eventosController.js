@@ -1,4 +1,5 @@
 import * as db from "../models/index.js"
+import { Op } from "sequelize"
 
 const {
   Usuario,
@@ -60,10 +61,10 @@ export const getEvento = async (req, res) => {
   try {
     const { id_evento } = req.params;
     const evento = await Evento.findByPk(id_evento, {
-      include:[
+      include: [
         {
           model: Sitio,
-          attributes: ["nombre","telefono","direccion","indicaciones"]
+          attributes: ["nombre", "telefono", "direccion", "indicaciones"]
         }
       ]
     });
@@ -108,51 +109,51 @@ export const updateEvento = async (req, res) => {
 
 
 
-export const updateState = async (req,res) => {
+export const updateState = async (req, res) => {
 
-    const { id_evento } = req.params;
+  const { id_evento } = req.params;
 
-    try {
-        const evento = await Evento.findByPk(id_evento, { include: Estado });
-        if (!evento) {
-        return res.status(404).json({ ok: false, message: "Sitio no encontrado" });
-        }
-
-        // Obtener el estado actual
-        const estadoActual = evento.Estado?.nombre
-
-        // Determinar el nuevo estado
-        let nuevoEstadoNombre;
-        if (estadoActual === "Activo") {
-        nuevoEstadoNombre = "Inactivo";
-        } else if (estadoActual === "Inactivo") {
-        nuevoEstadoNombre = "Activo";
-        } else {
-        return res.status(400).json({ ok: false, message: "El evento no puede cambiar de estado desde su estado actual." });
-        }
-
-        // Buscar el nuevo estado en la tabla Estados
-        const nuevoEstado = await Estado.findOne({ where: { nombre: nuevoEstadoNombre } });
-        if (!nuevoEstado) {
-        return res.status(500).json({ ok: false, message: `Estado '${nuevoEstadoNombre}' no encontrado en la base de datos.` });
-        }
-
-        // Actualizar el id_estado del sitio
-        evento.id_estado = nuevoEstado.id;
-        await evento.save();
-
-        res.json({
-        ok: true,
-        message: `El evento ahora está en estado '${nuevoEstado.nombre}'.`,
-        evento,
-        });
-    } catch (error) {
-        console.error("Error al actualizar el estado del evento:", error);
-        res.status(500).json({
-        ok: false,
-        message: "Error interno al actualizar el estado del evento",
-        });
+  try {
+    const evento = await Evento.findByPk(id_evento, { include: Estado });
+    if (!evento) {
+      return res.status(404).json({ ok: false, message: "Sitio no encontrado" });
     }
+
+    // Obtener el estado actual
+    const estadoActual = evento.Estado?.nombre
+
+    // Determinar el nuevo estado
+    let nuevoEstadoNombre;
+    if (estadoActual === "Activo") {
+      nuevoEstadoNombre = "Inactivo";
+    } else if (estadoActual === "Inactivo") {
+      nuevoEstadoNombre = "Activo";
+    } else {
+      return res.status(400).json({ ok: false, message: "El evento no puede cambiar de estado desde su estado actual." });
+    }
+
+    // Buscar el nuevo estado en la tabla Estados
+    const nuevoEstado = await Estado.findOne({ where: { nombre: nuevoEstadoNombre } });
+    if (!nuevoEstado) {
+      return res.status(500).json({ ok: false, message: `Estado '${nuevoEstadoNombre}' no encontrado en la base de datos.` });
+    }
+
+    // Actualizar el id_estado del sitio
+    evento.id_estado = nuevoEstado.id;
+    await evento.save();
+
+    res.json({
+      ok: true,
+      message: `El evento ahora está en estado '${nuevoEstado.nombre}'.`,
+      evento,
+    });
+  } catch (error) {
+    console.error("Error al actualizar el estado del evento:", error);
+    res.status(500).json({
+      ok: false,
+      message: "Error interno al actualizar el estado del evento",
+    });
+  }
 }
 
 
@@ -184,5 +185,25 @@ export const getEventos = async (req, res) => {
       ok: false,
       message: "Error al obtener los eventos activos",
     });
+  }
+};
+
+export const checkDate = async () => {
+  try {
+    const hoy = new Date();
+
+    const [updatedCount] = await Evento.update(
+      { id_estado: 4 }, // finalizado
+      {
+        where: {
+          fecha_fin: { [Op.lt]: hoy },
+          id_estado: 1, // solo activos
+        },
+      }
+    );
+
+    console.log(`[CRON] ${updatedCount} eventos actualizados a finalizado`);
+  } catch (err) {
+    console.error("[CRON] Error actualizando eventos:", err);
   }
 };

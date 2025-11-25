@@ -3,7 +3,8 @@ import { Estado } from '../models/index.js';
 const estadosData = [
   { nombre: 'Activo' },
   { nombre: 'Inactivo' },
-  { nombre: 'Suspendido' }
+  { nombre: 'Suspendido' },
+  { nombre: 'Finalizado' }
 ];
 
 async function seedEstados() {
